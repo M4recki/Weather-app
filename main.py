@@ -342,14 +342,14 @@ class App(ctk.CTk):
         city = self.change_city_input.get()
         url = f"https://maps.googleapis.com/maps/api/geocode/json?address={city}&key={google_maps_api}"
         current_weather_response = requests.get(url)
-        data = json.loads(current_weather_response.text)
+        data = current_weather_response.json()
 
-        if data["status"] == "OK":
-            lat_for_other_city = data["results"][0]["geometry"]["location"]["lat"]
-            lng_for_other_city = data["results"][0]["geometry"]["location"]["lng"]
-            city_and_country = data['results'][0]['formatted_address']
-            city_name = city_and_country.split(",")[0]
-            country_name = city_and_country.split(",")[1]
+        if data.get("status") == "OK":
+            result = data.get("results")[0]
+            lat_for_other_city = result["geometry"]["location"]["lat"]
+            lng_for_other_city = result["geometry"]["location"]["lng"]
+            city_and_country = result['formatted_address']
+            city_name, country_name = city_and_country.split(",")[:2]
 
             # Shortcut for country
             try:
@@ -441,69 +441,67 @@ class App(ctk.CTk):
             for day in range(0, 5):
                 # Label for the day name
                 forecast_day_label_name = f"forecast_day_label_{day}"
-                if hasattr(self, forecast_day_label_name):
-                    self.forecast_day_label = getattr(
-                        self, forecast_day_label_name)
-                    self.forecast_day_label.configure(
-                        text=(datetime.now() + timedelta(days=day)).strftime("%A"))
-                else:
-                    self.forecast_day_label = ctk.CTkLabel(master=self.forecast_frame, text=(datetime.now(
+                forecast_day_label = getattr(
+                    self, forecast_day_label_name, None)
+                if forecast_day_label is None:
+                    forecast_day_label = ctk.CTkLabel(master=self.forecast_frame, text=(datetime.now(
                     ) + timedelta(days=day)).strftime("%A"), font=(font_name, 20), text_color="white")
-                    self.forecast_day_label.grid(
+                    forecast_day_label.grid(
                         row=4+day, column=0, padx=(50, 0), pady=(20, 0), sticky="nw")
                     setattr(self, forecast_day_label_name,
-                            self.forecast_day_label)
+                            forecast_day_label)
+                else:
+                    forecast_day_label.configure((datetime.now() + timedelta(days=day)).strftime("%A"))
 
                 # Image label for the weather icon
                 forecast_weather_image_label_name = f"forecast_weather_image_label_{day}"
-                if hasattr(self, forecast_weather_image_label_name):
-                    self.forecast_weather_image_label = getattr(
-                        self, forecast_weather_image_label_name)
-                    self.forecast_weather_image = ctk.CTkImage(
+                forecast_weather_image_label = getattr(
+                    self, forecast_weather_image_label_name, None)
+                if forecast_weather_image_label is None:
+                    forecast_weather_image = ctk.CTkImage(
                         Image.open(forecast_data_list[day][3]), size=(40, 40))
-                    self.forecast_weather_image_label.configure(
-                        image=self.forecast_weather_image)
-                else:
-                    self.forecast_weather_image = ctk.CTkImage(
-                        Image.open(forecast_data_list[day][3]), size=(40, 40))
-                    self.forecast_weather_image_label = ctk.CTkLabel(
-                        master=self.forecast_frame, text="", image=self.forecast_weather_image)
-                    self.forecast_weather_image_label.grid(
+                    forecast_weather_image_label = ctk.CTkLabel(
+                        master=self.forecast_frame, text="", image=forecast_weather_image)
+                    forecast_weather_image_label.grid(
                         row=4+day, column=1, padx=0, pady=(20, 0), sticky="nsew")
                     setattr(self, forecast_weather_image_label_name,
-                            self.forecast_weather_image_label)
+                            forecast_weather_image_label)
+                else:
+                    forecast_weather_image = ctk.CTkImage(
+                        Image.open(forecast_data_list[day][3]), size=(40, 40))
+                    forecast_weather_image_label.configure(image=forecast_weather_image)
 
                 # Label for the weather description
                 forecast_weather_label_name = f"forecast_weather_label_{day}"
-                if hasattr(self, forecast_weather_label_name):
-                    self.forecast_weather_label = getattr(
-                        self, forecast_weather_label_name)
-                    self.forecast_weather_label.configure(
-                        text=forecast_data_list[day][2])
-                else:
-                    self.forecast_weather_label = ctk.CTkLabel(
+                forecast_weather_label = getattr(
+                    self, forecast_weather_label_name, None)
+                if forecast_weather_label is None:
+                    forecast_weather_label = ctk.CTkLabel(
                         master=self.forecast_frame, text=forecast_data_list[day][2], font=(font_name, 20), text_color="white")
-                    self.forecast_weather_label.grid(
+                    forecast_weather_label.grid(
                         row=4+day, column=2, padx=0, pady=(20, 0), sticky="w")
                     setattr(self, forecast_weather_label_name,
-                            self.forecast_weather_label)
+                            forecast_weather_label)
+                else:
+                    forecast_weather_label.configure(
+                        text=forecast_data_list[day][2])
 
                 # Label for the temperature
                 forecast_temp_label_name = f"forecast_temp_label_{day}"
-                if hasattr(self, forecast_temp_label_name):
-                    self.forecast_temp_label = getattr(
-                        self, forecast_temp_label_name)
-                    self.forecast_temp_label.configure(
-                        text=f"{forecast_data_list[day][0]}/{forecast_data_list[day][1]}°C")
-                else:
-                    self.forecast_temp_label = ctk.CTkLabel(
+                forecast_temp_label = getattr(
+                    self, forecast_temp_label_name, None)
+                if forecast_temp_label is None:
+                    forecast_temp_label = ctk.CTkLabel(
                         master=self.forecast_frame, text=f"{forecast_data_list[day][0]}/{forecast_data_list[day][1]}°C", font=(font_name, 20), text_color="white")
-                    self.forecast_temp_label.grid(
+                    forecast_temp_label.grid(
                         row=4+day, column=3, padx=50, pady=(20, 0), sticky="nw")
                     setattr(self, forecast_temp_label_name,
-                            self.forecast_temp_label)
+                            forecast_temp_label)
+                else:
+                    forecast_temp_label.configure(
+                        text=f"{forecast_data_list[day][0]}/{forecast_data_list[day][1]}°C")
 
-        elif data["status"] == "ZERO_RESULTS":
+        elif data.get("status") == "ZERO_RESULTS":
             self.error_label.configure(
                 text="The specified city name could not be found. Make sure you typed it correctly and try again.")
 
