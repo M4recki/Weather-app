@@ -26,12 +26,6 @@ You can install these libraries using pip by running the following command:
 ```
 
 
-
-
-
-
-
-
 ## Screenshots
 
 ![sc1](https://user-images.githubusercontent.com/111280515/224102030-b1124f4a-5f4e-4475-813c-14e2655b28bc.png)
