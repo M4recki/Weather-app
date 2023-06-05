@@ -10,7 +10,7 @@ Weather App is a simple application that allows you to check the current weather
 - [@M4recki](https://www.github.com/M4recki)
 
 
-## Requirments:
+## Requirements:
 
 - Python 3.x
 - requests
