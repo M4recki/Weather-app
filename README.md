@@ -49,5 +49,3 @@ To use the Weather App, simply run the main.py file in your Python environment. 
 
 If you have any questions or comments about the Weather App, please contact us at MARBARA93@edu.lublin.eu
 
-In this README.md file, the purpose of the Weather App is explained, along with installation instructions and usage information. Additionally, licensing information and contact details are provided for users who have further questions or concerns.
-
